@@ -1,0 +1,10 @@
+{
+    "server":"SIP",
+    "server_port":PORT,
+    "local_address": "0.0.0.0",
+    "local_port":1080,
+    "password":"MM",
+    "timeout":300,
+    "method":"METHOD",
+    "fast_open": true
+}

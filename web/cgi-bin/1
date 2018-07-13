@@ -1,0 +1,31 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=2"/>"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br>"
+
+echo "<form ACTION="/cgi-bin/1s" >" 
+echo "<center><h3>【设置宽带账号和密码】<br>" 
+
+echo "<h3>宽带账号:"
+echo "<INPUT NAME="n1ame" SIZE="14"><br>"
+
+echo "<h3>宽带密码:"
+echo "<INPUT NAME="mm" SIZE="14"><br>"
+
+echo "<h3>克隆地址:"
+echo "<INPUT NAME="mac" SIZE="14" placeholder="英文冒号分隔"><br>"
+echo "(该项一般不填)<br>"
+
+echo "<br><INPUT TYPE="SUBMIT" class="myButton3"  VALUE="提交"> </h3>"
+
+echo "</form >"
+
+echo "<br>"
+echo "</form >"
+echo "</BODY></HTML>"

@@ -1,0 +1,21 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<meta http-equiv="refresh" content="3\;URL=a" />"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo " <br>"
+echo " <br>"
+echo " <h2>ap<h2>"
+echo " <h2>正在重新拨号...</h2>"
+echo " <h2>跳转日志页面中，查看最新日志</h2>"
+echo " <br> "
+echo "</BODY></HTML>"
+poff -a
+pon dsl-1
+ps -ef | grep pppd | grep -v grep
+

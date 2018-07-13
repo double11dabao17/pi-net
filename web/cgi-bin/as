@@ -1,0 +1,31 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<meta http-equiv="refresh" content="3\;URL=../" />"
+echo "<TITLE>RjWiFi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <h2>as<h2>"
+echo " <h2>重启SS中...</h2>"
+echo " <h2>跳转到首页中，查看ip信息</h2>"
+echo " <br>"
+echo " <br>" 
+echo " <br>"
+echo " <br>" 
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo "</BODY></HTML>"
+killall client_linux_arm7
+cd /root/pi-net/ss && ./cmd-ss restart

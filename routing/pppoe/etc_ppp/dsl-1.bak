@@ -1,0 +1,11 @@
+# Minimalistic default options file for DSL/PPPoE connections
+unit 1
+plugin rp-pppoe.so eth0
+user "NAME" 
+noipdefault
+defaultroute
+replacedefaultroute
+hide-password
+noauth
+persist
+usepeerdns

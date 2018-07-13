@@ -1,0 +1,44 @@
+#!/bin/bash
+echo
+echo -e "1.CPU温度:" $(cut -c1-2 /etc/armbianmonitor/datasources/soctemp) " "$(free -mh | awk '/Mem/{print "系统内存:"$2" 已使用:"$3}') \
+"  启动耗时:"$(systemd-analyze | awk '{print $NF}')"  接收数据:"$(ifconfig eth0 | awk -F '[()]' '/bytes/{print $2}')
+echo -n 2.运行时间:
+uptime
+#./router-control status
+echo -n "3.DNS进程: "
+pgrep dnsmasq > /dev/null && echo 开启 || echo 未开启
+#ps -ef | awk '{print $8,$9,$10,$11}' | grep dnsmasq | grep -v grep || echo 未开启
+echo -n "4.自带无线: "
+pgrep hostapd > /dev/null && echo 开启 || echo 未开启
+#ps -ef | awk '{print $8,$9,$10,$11}' | grep hostapd | grep -v grep || echo 未开启
+echo -n "5.S-S进程: "
+ps -ef | awk '{print $8,$9,$10,$11}' | grep json | grep -v grep || echo 未开启
+echo -n "6.测试百度: "
+curl --retry 1 -4 -sSL -m 3  www.baidu.com -o /dev/null -w  %{time_total},%{time_namelookup},%{http_code} && echo " 成功 Ok!" || echo " 失败 No!"
+echo "7.测试DNS: "$(dig +short +time=2 +tries=2 @127.0.0.1 www.google.com | grep "\." && echo "  成功 Ok!" || echo "  失败 No!")
+#echo "7.测试DNS: "$(dig +short +time=2 +tries=2 @10.0.0.1 www.google.com | grep "\." && echo "  成功 Ok!" || echo "  失败 No!")
+echo
+echo -n "8.路由规则: " 
+ip r | grep default
+iptables -S -t nat | grep -v "\-P " | egrep -v "N BY|-inner|-cn"
+#iptables -S  | grep -v "\-P " | egrep -v "j DROP"
+#iptables -S | grep -v "\-P " | egrep -v "j DROP|pmtu|state"
+echo
+echo 9.拨号日志 pppoe log
+#cat /var/log/syslog | grep pppd | grep -v "DNS address" | tail
+#ip a | grep  peer |  awk 'NR==1{print "  "$2}'
+#ps -ef | awk '{print "  "$8,$9,$10,$11}' | grep pppd | grep -v grep || echo 未开启
+pgrep pppd > /dev/null && ip a | grep  peer |  awk 'NR==1{print $2}' || echo 未开启
+cat /var/log/syslog | grep pppd | egrep -v "DNS address|remote IP|peer from calling number|PPP session is 1| Connected to| Using interface ppp1" | tail -n 7 | awk '{$4=$1=$2="";print $0}'
+echo 
+echo 10.ss log
+tail -n 8 /var/log/pingss.log | awk 'NR==1{print $0"|"};NR>1{print $4,$5"|"}' | xargs
+#ps -ef | awk '{print "  "$8,$9,$10,$11}' | grep ss-redir | grep -v grep >/dev/null && cat /root/pi-net/ss/ss.json | awk -F '"' '/server/{print "   "$4;exit}'
+#pgrep ss-redir > /dev/null && cat /root/pi-net/ss/ss.json | awk -F '"' '/server/{print "   "$4;exit}'
+#pgrep ss-redir > /dev/null &&  tail -n 5 /var/log/pingss.log
+#cat /var/log/ss.log | grep -v " Connection reset"
+cat /var/log/ss.log | sort -u | grep -v " Connection reset"
+echo
+echo 11.kcp log
+ps -ef | awk '{print "  "$8,$9,$10,$11}' | grep client | grep -v grep >/dev/null && cat /root/pi-net/kcp/kcp.json | awk -F '"' '/remote/{print "   "$4;exit}'
+cat /var/log/kcp.log 2>/dev/null | grep -vE "stream| Connection reset"

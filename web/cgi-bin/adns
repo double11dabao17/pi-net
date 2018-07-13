@@ -1,0 +1,28 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<meta http-equiv="refresh" content="5\;URL=/cgi-bin/a" />"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br><br>"
+
+# extract the data you are looking for with sed:
+ip=`echo "$QUERY_STRING" | sed -n 's/^.*ip=\([^&]*\).*$/\1/p' | sed "s/%20/ /g" | sed "s/%40/@/g" `
+port=`echo "$QUERY_STRING" | sed -n 's/^.*port=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+
+echo "<h2>OK 添加成功</h2>" 
+echo "<br><br>"
+echo "<h2>DNS服务器地址: $ip : $port  </h2>" 
+echo "<br>"
+echo " </form >"
+echo " </BODY></HTML>"
+
+if [ -n "$ip" -a -n "$port" ] ; then
+echo "server=${ip}#${port}" >> /etc/dnsmasq.d/dns-server.conf
+cat /etc/dnsmasq.d/dns-server.conf | tr '\n' '-' | sed 's/-/<br><br>/g'
+killall dnsmasq ; dnsmasq &
+fi

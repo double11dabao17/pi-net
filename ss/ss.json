@@ -1,0 +1,10 @@
+{
+    "server":"ga.able8.xyz",
+    "server_port":7271,
+    "local_address": "0.0.0.0",
+    "local_port":1080,
+    "password":"ss",
+    "timeout":300,
+    "method":"aes-256-cfb",
+    "fast_open": true
+}

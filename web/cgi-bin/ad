@@ -1,0 +1,28 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br>"
+echo "<br>"
+echo "<br>"
+echo "<br>"
+echo "<form ACTION="/cgi-bin/adns" >" 
+echo "<center><h3>【添加DNS服务器】<br>" 
+echo "<br>"
+echo "<h3>地址:"
+echo "<INPUT NAME="ip" SIZE="12"> :"
+echo "<INPUT NAME="port" SIZE="6" placeholder="端口"><br>"
+
+echo "<br>"
+echo "<br><INPUT TYPE="SUBMIT" class="myButton3"  VALUE="提交"> </h3>"
+
+echo "</form >"
+
+echo "<br>"
+echo "</form >"
+echo "</BODY></HTML>"

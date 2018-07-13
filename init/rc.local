@@ -1,0 +1,23 @@
+#!/bin/bash -e
+#开启Wi-Fi
+hostapd -B /etc/hostapd.conf &>/dev/null &
+
+dnsmasq &
+#开启web服务
+cd /root/pi-net/web && python3 -m http.server --cgi  80 &
+
+#开启ss服务,延时启动，有网后再启动
+sleep 20 && cd /root/pi-net/ss/ && ./cmd-ss start &
+
+#稍后再添加iptables，防止和routing.sh的冲突，造成无法上网
+cd /root/pi-net/bypass && sleep 20 && ./bypass-ctl start br0 &
+
+#有时出现dnsmasq启动失败，强制重新启动
+#sleep 5; ss -unl| grep "10.0.0.1:53" || service dnsmasq restart &
+
+#启动600s后，关闭Wi-Fi，降低CPU温度
+sleep 600 && killall hostapd &
+
+#ifconfig eth0 down && ifconfig eth0 hw ether D4:83:04:A3:16:0D && ifconfig eth0 up;pon dsl-1 &
+cd /root/pi-net && ./rc.sh &
+exit 0

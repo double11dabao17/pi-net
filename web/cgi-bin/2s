@@ -1,0 +1,44 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<meta http-equiv="refresh" content="4\;URL=../" />"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br><br>"
+ 
+# extract the data you are looking for with sed:
+namew=`echo "$QUERY_STRING" | sed -n 's/^.*namew=\([^&]*\).*$/\1/p' | sed "s/%20/ /g" | sed "s/%40/@/g" `
+pwdw=`echo "$QUERY_STRING" | sed -n 's/^.*pwdw=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+
+mm=`echo "$QUERY_STRING" | sed -n 's/^.*mm=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+kp=`echo "$QUERY_STRING" | sed -n 's/^.*kp=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+km=`echo "$QUERY_STRING" | sed -n 's/^.*km=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+
+fs=`echo "$QUERY_STRING" | sed -n 's/^.*fs=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+kf=`echo "$QUERY_STRING" | sed -n 's/^.*kf=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+
+echo "<h2>地址: $namew : $pwdw  </h2>" 
+echo "<h2>密码:  $mm  </h2>" 
+echo "<h2>加密方式:  $fs  </h2>" 
+echo "<br>"
+echo "<h2>kcp端口:  $kp  </h2>" 
+echo "<h2>kcp密码:  $km  </h2>" 
+echo "<h2>kcp加密方式:  $kf  </h2>" 
+
+echo "<br>"
+echo " </form >"
+echo " </BODY></HTML>"
+
+echo $namew > /root/pi-net/bypass/white/02-vps
+
+if [ -n "$kp" ] ; then
+cd /root/pi-net/kcp && sed "s/SIP/$namew/;s/KP/$kp/;s/MM/$km/;s/METHOD/$kf/" kcp.json.bak > kcp.json
+cd /root/pi-net/ss && sed "s/SIP/$namew/;s/PORT/$pwdw/;s/MM/$mm/;s/METHOD/$fs/" ss.json.bak > ss.json
+cd /root/pi-net/kcp && sed "s/MM/$mm/;s/METHOD/$fs/" ss.json.bak > ss.json && ./cmd-kcp start
+else 
+cd /root/pi-net/ss && sed "s/SIP/$namew/;s/PORT/$pwdw/;s/MM/$mm/;s/METHOD/$fs/" ss.json.bak > ss.json && ./cmd-ss start
+fi

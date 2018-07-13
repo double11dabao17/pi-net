@@ -1,0 +1,8 @@
+{
+    "localaddr": "127.0.0.1:8388",
+    "remoteaddr": "SIP:KP",
+    "key": "MM",
+    "crypt": "METHOD",
+    "mode": "fast2",
+    "snmplog": "/tmp/snmpd-20160102.log"
+}

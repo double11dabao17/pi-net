@@ -1,0 +1,6 @@
+#!/bin/sh
+echo Content-type: text/plain \; charset=utf-8
+echo
+echo "doing...系统日志："
+cd /root/pi-net && ./ipt
+#armbianmonitor -m

@@ -1,0 +1,25 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "	<br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo " <h2>正在重启路由</h2>"
+echo " <br>"
+echo " <h2>请稍后重新连接</h2>"
+echo " <br> "
+echo " <br>"
+echo " <br>"
+echo " <br>"
+echo "	<br>"
+echo "</BODY></HTML>"
+reboot -f
+

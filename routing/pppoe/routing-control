@@ -1,0 +1,128 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+NC='\033[0m'
+
+basepath=$(dirname $"$0")
+
+NET_CF_PATH=/etc/network/interfaces
+BAY_SERVICE_PATH=/etc/Bay
+
+# Config ethernet configuration
+config_eth() {
+	echo -e "${RED}Backup origin network config into /etc/network/if.backup${NC}"
+	cp $NET_CF_PATH /etc/network/if.backup
+	echo -e "${RED}Config eth0 as WAN, eth1 as LAN with ip 192.168.10.1, which requires restarting your raspberry pi${NC}"
+	cp $basepath/interfaces $NET_CF_PATH
+}
+
+# Config system as a router
+
+config_routing() {
+	echo -e "${RED}Config routing as a systemd service, called routing.service${NC}"
+	mkdir -p $BAY_SERVICE_PATH
+	cp $basepath/routing.sh $BAY_SERVICE_PATH/
+	cp $basepath/bay_routing.service /etc/systemd/system/
+}
+
+
+# Start routing service
+
+start_routing() {
+	echo -e "${RED}Enable and start routing.service${NC}"
+	for cmd in "enable" "start" "status"
+	do
+	  systemctl $cmd bay_routing.service
+	done
+	iptables -L -nv
+}
+
+
+# Restore origin ethernet config file 
+
+restore_eth_config() {
+	cp /etc/network/if.backup $NET_CF_PATH
+	rm /etc/network/if.backup
+}
+
+
+# Remove origin routing config file
+
+remove_routing_config() {
+	rm /etc/systemd/system/bay_routing.service
+	rm -rf $BAY_SERVICE_PATH/routing.sh
+}
+
+# Stop routing service
+
+stop_routing() {
+	echo -e "${RED}Stop and disable routing.service${NC}"
+	for cmd in "disable" "stop" "status"
+	do
+	  systemctl $cmd bay_routing.service
+	done
+
+	iptables -L -nv
+}
+
+
+# Install system
+
+install() {
+	mkdir /etc/ppp/peers/
+	cp $basepath/etc_ppp/chap-secrets /etc/ppp/
+        cp $basepath/etc_ppp/dsl-1 /etc/ppp/peers/
+	config_eth
+	config_routing
+	start_routing
+	#reboot
+}
+
+
+
+# Uninstall system
+
+uninstall() {
+	stop_routing
+	remove_routing_config
+	restore_eth_config
+        rm /etc/ppp/chap-secrets
+        rm -r /etc/ppp/peers
+#       reboot
+}
+
+
+# Display status 
+
+status() {
+	echo -e "${RED}interfaces${NC}"
+	ifconfig
+	echo -e "${RED}routing${NC}"
+	iptables -L -nv
+	systemctl status bay_routing.service
+}
+
+# Entry point
+
+case "$1" in
+  install)
+    install
+    ;;
+
+  uninstall)
+    uninstall
+    ;;
+  start)
+    start_routing
+    ;;
+  stop)
+    stop_routing
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo $"Usage: $0 {install | uninstall | status | start | stop }"
+    exit 1
+
+esac

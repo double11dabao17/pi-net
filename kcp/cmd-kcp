@@ -1,0 +1,57 @@
+#!/bin/bash
+
+case "$1" in
+    start)
+        killall ss-redir 2>/dev/null
+        killall client_linux_arm7 2>/dev/null
+ 	rm /var/log/kcp.log 2>/dev/null
+
+        client_linux_arm7 -c kcp.json &>>/var/log/kcp.log &
+        ss-redir -c ss.json &>>/var/log/kcp.log &
+
+iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN 2>/dev/null
+ipset destroy white/02-vps
+ipset create white/02-vps hash:net
+ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
+iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
+
+    ;;
+    
+    stop)
+        killall ss-redir
+        killall client_linux_arm7
+
+#	sspip=$(cat kcp.json | awk -F '[":]' '/remoteaddr/{print $5}')
+#	iptables -t nat -D BYPASS -p tcp -d $ssip -j RETURN
+    ;;
+    
+    restart)
+        killall ss-redir 2>/dev/null
+        killall client_linux_arm7 2>/dev/null
+ 	rm /var/log/kcp.log 2>/dev/null
+
+        client_linux_arm7 -c kcp.json &>>/var/log/kcp.log &
+        ss-redir -c ss.json &>>/var/log/kcp.log &
+
+iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN 2>/dev/null
+ipset destroy white/02-vps
+ipset create white/02-vps hash:net
+ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
+iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
+
+    ;;
+    
+    status|s)
+        echo ""
+        echo "------------------------ kcp status --------------------------"
+        ps aux | grep client_linux_arm7
+        ps aux | grep ss-redir
+        cat /var/log/kcp.log
+    ;;
+    log)
+       tail -f /var/log/kcp.log	
+    ;;
+    *)
+        echo "Usage: $0 {start |stop |restart |status}"
+        exit 1
+esac

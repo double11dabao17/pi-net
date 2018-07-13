@@ -1,0 +1,9 @@
+create white/01-inner hash:net family inet hashsize 1024 maxelem 65536
+add white/01-inner 169.254.0.0/16
+add white/01-inner 192.168.0.0/16
+add white/01-inner 172.16.0.0/12
+add white/01-inner 240.0.0.0/4
+add white/01-inner 224.0.0.0/4
+add white/01-inner 127.0.0.0/8
+add white/01-inner 0.0.0.0/8
+add white/01-inner 10.0.0.0/8

@@ -1,0 +1,78 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br>"
+
+echo "<form ACTION="/cgi-bin/2s" >" 
+echo "<center><h3>【设置SS服务器信息】<br>" 
+
+echo "<h3>地址:"
+echo "<INPUT NAME="namew" SIZE="15"> :"
+echo "<INPUT NAME="pwdw" SIZE="6" placeholder="端口号"><br>"
+
+echo "<h3>密码:"
+echo "<INPUT NAME="mm" SIZE="25" placeholder="密码"><br>"
+
+echo "<h3>加密方式:"
+#echo "<label><input name="fs" type="radio" value="0" />标准</label><br>"  
+echo "<select name="fs">"
+echo "<option value="aes-256-cfb">aes-256-cfb</option>"
+echo "<option value="rc4-md5">rc4-md5</option>"
+echo "<option value="chacha20">chacha20</option>"
+echo "<option value="chacha20-ietf-poly1305">chacha20-ietf</option>"
+echo "<option value="salsa20">salsa20</option>"
+echo "<option value="xchacha20-ietf-poly1305">xchacha20-ietf</option>"
+echo "<option value="bf-cfb">bf-cfb</option>"
+echo "<option value="aes-128-cfb">aes-128-cfb</option>"
+echo "<option value="aes-128-ctr">aes-128-ctr</option>"
+echo "<option value="aes-128-gcm">aes-128-gcm</option>"
+echo "<option value="aes-192-cfb">aes-192-cfb</option>"
+echo "<option value="aes-192-ctr">aes-192-ctr</option>"
+echo "<option value="aes-192-gcm">aes-192-gcm</option>"
+echo "<option value="aes-256-ctr">aes-256-ctr</option>"
+echo "<option value="aes-256-gcm">aes-256-gcm</option>"
+echo "<option value="camellia-128-cfb">camellia-128-cfb</option>"
+echo "<option value="camellia-192-cfb">camellia-192-cfb</option>"
+echo "<option value="camellia-256-cfb">camellia-256-cfb</option>"
+echo "</select>"
+
+echo "<br>"
+echo "<br>"
+
+echo "<h3>【设置KCP(一般不填)】"
+echo "<h3>端口: <INPUT NAME="kp" SIZE="25"><br>"
+echo "<h3>密码: <INPUT NAME="km" SIZE="25"><br>"
+echo "<h3>加密方式:"
+echo "<select name="kf">"
+echo "<option value="aes">aes</option>"
+echo "<option value="aes-128">aes-128</option>"
+echo "<option value="aes-192">aes-192</option>"
+echo "<option value="3des">3des</option>"
+echo "<option value="blowfish">blowfish</option>"
+echo "<option value="cast5">cast5</option>"
+echo "<option value="none">none</option>"
+echo "<option value="salsa20">salsa20</option>"
+echo "<option value="sm4">sm4</option>"
+echo "<option value="tea">tea</option>"
+echo "<option value="twofish">twofish</option>"
+echo "<option value="xor">xor</option>"
+echo "<option value="xtea">xtea</option>"
+echo "<option value="camellia-256-cfb">camellia-256-cfb</option>"
+echo "</select>"
+
+echo "<br>"
+
+
+echo "<br><INPUT TYPE="SUBMIT" class="myButton3"  VALUE="提交"> </h3>"
+
+echo "</form >"
+
+echo "<br>"
+echo "</form >"
+echo "</BODY></HTML>"

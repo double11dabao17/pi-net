@@ -1,0 +1,43 @@
+#!/bin/sh
+echo Content-type:text/html
+echo
+echo "<HTML><HEAD>"
+echo "<meta http-equiv="Content-Type" content=\"text/html\;charset=utf-8\"/>"
+echo "<meta name="viewport" content="width=device-width, initial-scale=1"/>"
+echo "<meta http-equiv="refresh" content="30\;URL=a" />"
+echo "<TITLE>Pi</TITLE>"
+echo "<link rel="stylesheet" href="/8.css" type="text/css">"
+echo "</HEAD><BODY>"
+echo "<br><br>"
+
+#  extract the data you are looking for with sed:
+n1ame=`echo "$QUERY_STRING" | sed -n 's/^.*n1ame=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+mm=`echo "$QUERY_STRING" | sed -n 's/^.*mm=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+mac=`echo "$QUERY_STRING" | sed -n 's/^.*mac=\([^&]*\).*$/\1/p' | sed "s/%20/ /g" | sed "s/%3A/:/g"`
+
+
+echo "<h2>宽带账号:  $n1ame  </h2>" 
+echo "<h2>宽带密码:  $mm  </h2>" 
+echo "<h2>mac 地址:  $mac  </h2>" 
+echo "<br>"
+echo "<br>"
+echo "<br>"
+echo "<h2>重启软路由中，请稍等1分钟  </h2>" 
+echo "<br>"
+echo "<br>"
+echo " </form >"
+echo " </BODY></HTML>"
+
+
+if [ -n "$mac" ] ; then
+echo "ifconfig eth0 down;ifconfig eth0 hw ether $mac; ifconfig eth0 up" >> /root/pi-net/rc.sh
+fi
+
+if [ -n "$n1ame" ] ; then
+cd /root/pi-net/routing/pppoe/etc_ppp
+sed  "s/NAME/$n1ame/g" dsl-1.bak > dsl-1 
+sed  "s/NAME/$n1ame/g;s/MM/$mm/g" chap-secrets.bak > chap-secrets
+sed  "s/NAME/$n1ame/g;s/MM/$mm/g" pap-secrets.bak > pap-secrets
+cd /root/pi-net && ./pppoe_router.sh install
+fi
+

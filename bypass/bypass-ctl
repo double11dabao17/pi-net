@@ -1,0 +1,115 @@
+#!/bin/bash
+
+clean-ipset() {
+    for conf in white/0*
+    do
+        echo "Cleaning $conf ..."
+        ipset destroy $conf
+        echo "Finish cleaning $conf"
+    done
+}
+
+clean-rule() {
+    if [ "$1" = "" ]; then
+        echo "Clean needs LAN interface name."
+    else
+        echo "clean start ..."
+        LAN=$1
+        iptables -t nat -D PREROUTING -p tcp -i $LAN -j BYPASS
+        iptables -t nat -F BYPASS
+        iptables -t nat -X BYPASS
+        echo "clean ... done"
+    fi
+}
+
+# create or update a ipset with iplist file
+UPDATE-IPSET() {
+    ipset=$1
+    
+    if [ -f $ipset ] && [ -s $ipset ]; then
+        echo "update $ipset list start ..."
+        ipset create -exist $ipset hash:net
+        ipset flush $ipset
+        
+        while read ip; do
+            ipset -q add $ipset $ip
+        done < $ipset
+        
+        echo "update $ipset list ... done"
+    fi
+}
+
+UPDATE-ALL-IPSETS() {
+    for conf in white/0*
+    do
+        echo "$conf"
+        UPDATE-IPSET $conf
+    done
+}
+
+START() {
+    LAN=$1
+    PORT=1080
+    clean-rule $LAN
+    clean-ipset
+    
+    # update ips in ipset
+#    UPDATE-ALL-IPSETS
+
+ipset create white/02-vps hash:net
+ipset add white/02-vps $(cat white/02-vps)
+
+ipset restore -f white/cn.txt
+ipset restore -f white/inner.txt
+
+    # create chain BYPASS
+    iptables -t nat -N BYPASS
+    iptables -t nat -I PREROUTING -p tcp -i $LAN -j BYPASS
+    # append dafault whitelist rule
+    for conf in white/0*
+    do
+        if [ -f $conf ] && [ -s $conf ]; then
+            iptables -t nat -A BYPASS -p tcp --match set --match-set "$conf" dst -j RETURN
+        fi
+    done
+    
+    # append default redirect rule
+    iptables -t nat -A BYPASS -p tcp -j REDIRECT --to $PORT
+
+    # check all rules
+    iptables -t nat -L -vn
+}
+
+case "$1" in
+    start)
+        lan="$2"
+        [ "$lan" == "" ] && echo "Usage: $0 {start br0|stop br0|restart br0|status}" && exit
+        START $lan
+    ;;
+    
+    stop)
+        lan="$2"
+        [ "$lan" == "" ] && echo "Usage: $0 {start br0|stop br0|restart br0|status}" && exit
+        clean-rule $lan
+        clean-ipset
+    ;;
+    
+    restart)
+        lan="$2"
+        [ "$lan" == "" ] && echo "Usage: $0 {start br0|stop br0|restart br0|status}" && exit
+        clean-rule $lan
+        clean-ipset
+        START $lan
+    ;;
+    
+    status)
+        echo ""
+        echo "---------------------------- bypass status ---------------------------"
+        sudo iptables -t nat -L -vn
+        sudo iptables -L -nv
+    ;;
+    
+    *)
+        echo $"Usage: $0 {start br0|stop br0|restart br0|status}"
+        exit 1
+esac
