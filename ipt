@@ -18,7 +18,7 @@ curl --retry 1 -4 -sSL -m 3  www.baidu.com -o /dev/null -w  %{time_total},%{time
 echo "7.测试DNS: "$(dig +short +time=2 +tries=2 @127.0.0.1 www.google.com | grep "\." && echo "  成功 Ok!" || echo "  失败 No!")
 #echo "7.测试DNS: "$(dig +short +time=2 +tries=2 @10.0.0.1 www.google.com | grep "\." && echo "  成功 Ok!" || echo "  失败 No!")
 echo
-echo -n "8.路由规则: " 
+echo -n "8.路由规则: "
 ip r | grep default
 iptables -S -t nat | grep -v "\-P " | egrep -v "N BY|-inner|-cn"
 #iptables -S  | grep -v "\-P " | egrep -v "j DROP"
@@ -30,7 +30,7 @@ echo 9.拨号日志 pppoe log
 #ps -ef | awk '{print "  "$8,$9,$10,$11}' | grep pppd | grep -v grep || echo 未开启
 pgrep pppd > /dev/null && ip a | grep  peer |  awk 'NR==1{print $2}' || echo 未开启
 cat /var/log/syslog | grep pppd | egrep -v "DNS address|remote IP|peer from calling number|PPP session is 1| Connected to| Using interface ppp1" | tail -n 7 | awk '{$4=$1=$2="";print $0}'
-echo 
+echo
 echo 10.ss log
 tail -n 8 /var/log/pingss.log | awk 'NR==1{print $0"|"};NR>1{print $4,$5"|"}' | xargs
 #ps -ef | awk '{print "  "$8,$9,$10,$11}' | grep ss-redir | grep -v grep >/dev/null && cat /root/pi-net/ss/ss.json | awk -F '"' '/server/{print "   "$4;exit}'

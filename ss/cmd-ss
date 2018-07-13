@@ -5,47 +5,47 @@ case "$1" in
     start)
         killall ss-redir 2>/dev/null
         killall client_linux_arm7 2>/dev/null
-	rm /var/log/ss.log 2>/dev/null
-	rm /var/log/kcp.log 2>/dev/null
-
-#	ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
-#	iptables -t nat -I BYPASS -p tcp -d $ssip -j RETURN
-iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN
-ipset destroy white/02-vps
-ipset create white/02-vps hash:net
-ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
-iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
-
+        rm /var/log/ss.log 2>/dev/null
+        rm /var/log/kcp.log 2>/dev/null
+        
+        #	ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
+        #	iptables -t nat -I BYPASS -p tcp -d $ssip -j RETURN
+        iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN
+        ipset destroy white/02-vps
+        ipset create white/02-vps hash:net
+        ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
+        iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
+        
         ss-redir -c ss.json &>/var/log/ss.log &
     ;;
     
     stop)
         killall ss-redir
-
-#	ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
-#	iptables -t nat -D BYPASS -p tcp -d $ssip -j RETURN
-#	iptables -t nat -D BYPASS  1
-
-	rm /var/log/ss.log 2>/dev/null
+        
+        #	ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
+        #	iptables -t nat -D BYPASS -p tcp -d $ssip -j RETURN
+        #	iptables -t nat -D BYPASS  1
+        
+        rm /var/log/ss.log 2>/dev/null
     ;;
     
     restart)
-        killall ss-redir 
+        killall ss-redir
         killall client_linux_arm7 2>/dev/null
-	rm /var/log/ss.log
-	rm /var/log/kcp.log 2>/dev/null
+        rm /var/log/ss.log
+        rm /var/log/kcp.log 2>/dev/null
         ss-redir -c ss.json &>>/var/log/ss.log &
-
-iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN
-ipset destroy white/02-vps
-ipset create white/02-vps hash:net
-ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
-iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
-
-#        ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
-#	iptables -t nat -D BYPASS -p tcp -d $ssip -j RETURN
-#	iptables -t nat -D BYPASS  1
-#        iptables -t nat -I BYPASS -p tcp -d $ssip -j RETURN
+        
+        iptables -t nat -D BYPASS -p tcp -m set --match-set white/02-vps dst -j RETURN
+        ipset destroy white/02-vps
+        ipset create white/02-vps hash:net
+        ipset add white/02-vps $(cat /root/pi-net/bypass/white/02-vps)
+        iptables -t nat -I BYPASS 2 -p tcp -m set --match-set white/02-vps dst -j RETURN # 插入第二条
+        
+        #        ssip=$(cat ss.json | awk -F '"' '/server/{print $4;exit}')
+        #	iptables -t nat -D BYPASS -p tcp -d $ssip -j RETURN
+        #	iptables -t nat -D BYPASS  1
+        #        iptables -t nat -I BYPASS -p tcp -d $ssip -j RETURN
     ;;
     
     status)

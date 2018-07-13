@@ -54,14 +54,14 @@ START() {
     clean-ipset
     
     # update ips in ipset
-#    UPDATE-ALL-IPSETS
-
-ipset create white/02-vps hash:net
-ipset add white/02-vps $(cat white/02-vps)
-
-ipset restore -f white/cn.txt
-ipset restore -f white/inner.txt
-
+    #    UPDATE-ALL-IPSETS
+    
+    ipset create white/02-vps hash:net
+    ipset add white/02-vps $(cat white/02-vps)
+    
+    ipset restore -f white/cn.txt
+    ipset restore -f white/inner.txt
+    
     # create chain BYPASS
     iptables -t nat -N BYPASS
     iptables -t nat -I PREROUTING -p tcp -i $LAN -j BYPASS
@@ -75,7 +75,7 @@ ipset restore -f white/inner.txt
     
     # append default redirect rule
     iptables -t nat -A BYPASS -p tcp -j REDIRECT --to $PORT
-
+    
     # check all rules
     iptables -t nat -L -vn
 }

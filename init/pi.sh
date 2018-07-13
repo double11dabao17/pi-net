@@ -19,7 +19,7 @@ EOF
 sudo bash -c 'echo "fs.file-max=102400" >> /etc/sysctl.conf'
 echo -e "session required\tpam_limits.so">> /etc/pam.d/common-session
 
-# fix ax88179_178a 3-1:1.0 eth1: kevent 2 may have been dropped 
+# fix ax88179_178a 3-1:1.0 eth1: kevent 2 may have been dropped
 sudo bash -c 'echo "vm.min_free_kbytes=32768" >> /etc/sysctl.conf'
 sudo bash -c 'echo "vm.vfs_cache_pressure=300" >> /etc/sysctl.conf'
 
@@ -61,7 +61,7 @@ SHELLINABOX_PORT=90
 SHELLINABOX_ARGS="--no-beep -t --service=/:SSH:127.0.0.1"
 EOF
 
-# Denyhosts ingore local ip  
+# Denyhosts ingore local ip
 echo "ALL:127.0.0.1/8" >> /etc/hosts.allow
 echo "ALL:10.0.0.1/24" >> /etc/hosts.allow
 
